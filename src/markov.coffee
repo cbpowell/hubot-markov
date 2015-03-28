@@ -54,6 +54,9 @@ module.exports = (robot) ->
 
     # Return on empty messages
     return if !msg.message.text
+    
+    # Return on empty users
+    return if !msg.message.user.name
 
     model.learn msg.message.user.name.toLowerCase(), msg.message.text
 
