@@ -58,6 +58,10 @@ module.exports = (robot) ->
     model.learn msg.message.user.name.toLowerCase(), msg.message.text
 
   # Generate markov chains on demand, optionally seeded by some initial state.
-  robot.respond /markov(\s+(.+))?$/i, (msg) ->
+  robot.respond /markov me(\s+(.+))?$/i, (msg) ->
     model.generate msg.message.user.name.toLowerCase(), msg.match[2] or '', max, (text) =>
+      msg.send text
+      
+  robot.respond /markov\s+(\S+)\s(.+)?$/i (msg) ->
+    model.generate msg.match[1], msg.match[2] or '', max, (text) =>
       msg.send text
