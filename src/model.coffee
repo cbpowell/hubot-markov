@@ -56,18 +56,18 @@ class MarkovModel
   # Add a phrase to the model. Increments the frequency of each @ply-order
   # state transition extracted from the phrase. Ignores any phrases containing
   # less than @min words.
-  learn: (phrase) ->
+  learn: (user, phrase) ->
     words = @._words(phrase)
 
     # Ignore phrases with fewer than the minimum words.
     return if words.length < @min
 
-    @storage.increment(t) for t in @._transitions(words)
+    @storage.increment(user, t) for t in @._transitions(words)
 
   # Generate random text based on the current state of the model and invokes
   # "callback" with it. The generated text will begin with "seed" and contain
   # at most "max" words.
-  generate: (seed, max, callback) ->
+  generate: (user, seed, max, callback) ->
     words = @._words(seed)
 
     # Create the initial storage key from "seed", if one is provided.
@@ -79,14 +79,14 @@ class MarkovModel
     chain = []
     chain.push words...
 
-    @._generate_more key, chain, max, callback
+    @._generate_more user, key, chain, max, callback
 
   # Recursive companion to "generate". Queries @storage for the choices available
   # from next hops from the current state described by "key", selects a hop
   # weighted by frequencies, and pushes it onto the chain. If the chain is complete,
   # invokes the callback and lets the call stack unwind.
-  _generate_more: (key, chain, max, callback) ->
-    @storage.get key, (choices) =>
+  _generate_more: (user, key, chain, max, callback) ->
+    @storage.get user, key, (choices) =>
       next = @._chooseWeighted choices
       if next is sentinel or max <= 0
         callback(chain.join(' '))
