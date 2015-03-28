@@ -62,6 +62,6 @@ module.exports = (robot) ->
     model.generate msg.message.user.name.toLowerCase(), msg.match[2] or '', max, (text) =>
       msg.send text
       
-  robot.respond /markov\s+(\S+)\s(.+)?$/i (msg) ->
+  robot.respond /markov\s+(\S+)\s(.+)?$/i, (msg) ->
     model.generate msg.match[1], msg.match[2] or '', max, (text) =>
       msg.send text
