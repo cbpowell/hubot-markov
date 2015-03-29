@@ -61,16 +61,24 @@ module.exports = (robot) ->
     # Return on empty users
     return if !msg.message.user.name
     
-    # Learn it
-    model.learn msg.message.user.name.toLowerCase(), msg.message.text
+    # Extract text (not robot name)
+    #re = new RegExp("(" + robot.name + "\s)?(.+)","i")
+    learnText = msg.message.text.match ///( #{robot.name} \s)?(.+)///i
+    console.log "Learning text: " + learnText[2]
+    #model.learn msg.message.user.name.toLowerCase(), msg.message.text
+    model.learn msg.message.user.name.toLowerCase(), learnText[2]
 
   # Generate markov chains on demand, optionally seeded by some initial state.
   # Generate chain of the user requesting (i.e. 'me'), with
   robot.respond /markov me(\s+(.*))?$/i, (msg) ->
-    model.generate msg.message.user.name.toLowerCase(), msg.match[2] or '', max, (text) =>
+    userName = msg.message.user.name.toLowerCase()
+    seedText = msg.match[2] or ''
+    model.generate userName, seedText, max, (text) =>
       msg.send text.capitalize()
   
   # Generate chain of a user, optionally seeded
   robot.respond /markov\s+(?!me)(\S+)(\s+(.+))?$/i, (msg) ->
-    model.generate msg.match[1].toLowerCase(), msg.match[3] or '', max, (text) =>
+    userName = msg.match[1].toLowerCase()
+    seedText = msg.match[3] or ''
+    model.generate userName, seedText, max, (text) =>
       msg.send text.capitalize()
