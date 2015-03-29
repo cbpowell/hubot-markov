@@ -96,6 +96,6 @@ class MarkovModel
         key.shift()
         key.push next
 
-        @._generate_more(key, chain, max - 1, callback)
+        @._generate_more(user, key, chain, max - 1, callback)
 
 module.exports = MarkovModel

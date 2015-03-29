@@ -57,14 +57,17 @@ module.exports = (robot) ->
     
     # Return on empty users
     return if !msg.message.user.name
-
+    
+    # Learn it
     model.learn msg.message.user.name.toLowerCase(), msg.message.text
 
   # Generate markov chains on demand, optionally seeded by some initial state.
   robot.respond /markov me(\s+(.+))?$/i, (msg) ->
     model.generate msg.message.user.name.toLowerCase(), msg.match[2] or '', max, (text) =>
+      console.log "responding A"
       msg.send text
       
-  robot.respond /markov\s+(\S+)\s(.+)?$/i, (msg) ->
+  robot.respond /markov\s+(?!me)(\S+)\s(.+)?$/i, (msg) ->
     model.generate msg.match[1], msg.match[2] or '', max, (text) =>
+      console.log "responding B"
       msg.send text
