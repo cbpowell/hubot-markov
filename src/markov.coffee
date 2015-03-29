@@ -28,6 +28,9 @@ Redis = require 'redis'
 MarkovModel = require './model'
 RedisStorage = require './redis-storage'
 
+String::capitalize = ->
+  @substr(0, 1).toUpperCase() + @substr(1)
+
 module.exports = (robot) ->
 
   # Configure redis the same way that redis-brain does.
@@ -62,10 +65,12 @@ module.exports = (robot) ->
     model.learn msg.message.user.name.toLowerCase(), msg.message.text
 
   # Generate markov chains on demand, optionally seeded by some initial state.
-  robot.respond /markov me(\s+(.+))?$/i, (msg) ->
+  # Generate chain of the user requesting (i.e. 'me'), with
+  robot.respond /markov me\s+(.*)?$/i, (msg) ->
     model.generate msg.message.user.name.toLowerCase(), msg.match[2] or '', max, (text) =>
-      msg.send text
-      
-  robot.respond /markov\s+(?!me)(\S+)\s(.+)?$/i, (msg) ->
-    model.generate msg.match[1].toLowerCase(), msg.match[2] or '', max, (text) =>
-      msg.send text
+      msg.send text.capitalize()
+  
+  # Generate chain of a user, optionally seeded
+  robot.respond /markov\s+(?!me)(\S+)(\s+(.+))?$/i, (msg) ->
+    model.generate msg.match[1].toLowerCase(), msg.match[3] or '', max, (text) =>
+      msg.send text.capitalize()
