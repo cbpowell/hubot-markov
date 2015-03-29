@@ -66,7 +66,7 @@ module.exports = (robot) ->
 
   # Generate markov chains on demand, optionally seeded by some initial state.
   # Generate chain of the user requesting (i.e. 'me'), with
-  robot.respond /markov me\s+(.*)?$/i, (msg) ->
+  robot.respond /markov me(\s+(.*))?$/i, (msg) ->
     model.generate msg.message.user.name.toLowerCase(), msg.match[2] or '', max, (text) =>
       msg.send text.capitalize()
   
