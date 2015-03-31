@@ -30,6 +30,9 @@ RedisStorage = require './redis-storage'
 
 String::capitalize = ->
   @substr(0, 1).toUpperCase() + @substr(1)
+  
+String::strip = -> 
+  if String::trim? then @trim() else @replace /^\s+|\s+$/g, ""
 
 module.exports = (robot) ->
 
@@ -61,12 +64,13 @@ module.exports = (robot) ->
     # Return on empty users
     return if !msg.message.user.name
     
+    userName = msg.message.user.name.toLowerCase()
     # Extract text (not robot name)
     #re = new RegExp("(" + robot.name + "\s)?(.+)","i")
     learnText = msg.message.text.match ///( #{robot.name} \s)?(.+)///i
     console.log "Learning text: " + learnText[2]
     #model.learn msg.message.user.name.toLowerCase(), msg.message.text
-    model.learn msg.message.user.name.toLowerCase(), learnText[2]
+    model.learn userName, learnText[2]
 
   # Generate markov chains on demand, optionally seeded by some initial state.
   # Generate chain of the user requesting (i.e. 'me'), with
