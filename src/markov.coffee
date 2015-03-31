@@ -77,20 +77,15 @@ module.exports = (robot) ->
     # Extract text (not robot name)
     #re = new RegExp("(" + robot.name + "\s)?(.+)","i")
     learnText = msg.message.text.match ///( #{robot.name} \s)?(.+)///i
-    console.log "Learning text: " + learnText[2]
-    #model.learn msg.message.user.name.toLowerCase(), msg.message.text
     model.learn userName, learnText[2]
 
   # Generate markov chains on demand, optionally seeded by some initial state.
   robot.respond /markov\s+(\S+\s?)(.+)?$/i, (msg) ->
     userName = msg.match[1].toLowerCase().strip()
     if userName is 'me'
-      console.log 'Markoving self!'
       userName = msg.message.user.name.toLowerCase().strip()
     else if userName is 'mumbot'
       return;
-    
-    console.log 'Markoving ' + userName + '!'
     
     seedText = msg.match[3] or ''
     model.generate userName, seedText, max, (text) =>
