@@ -87,6 +87,6 @@ module.exports = (robot) ->
     else if userName is 'mumbot'
       return;
     
-    seedText = msg.match[3] or ''
+    seedText = msg.match[2] or ''
     model.generate userName, seedText, max, (text) =>
       msg.send text.capitalize()
