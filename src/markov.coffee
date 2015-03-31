@@ -73,16 +73,16 @@ module.exports = (robot) ->
     model.learn userName, learnText[2]
 
   # Generate markov chains on demand, optionally seeded by some initial state.
-  # Generate chain of the user requesting (i.e. 'me'), with
-  robot.respond /markov me(\s+(.*))?$/i, (msg) ->
-    userName = msg.message.user.name.toLowerCase()
-    seedText = msg.match[2] or ''
-    model.generate userName, seedText, max, (text) =>
-      msg.send text.capitalize()
-  
-  # Generate chain of a user, optionally seeded
-  robot.respond /markov\s+(?!me)(\S+)(\s+(.+))?$/i, (msg) ->
-    userName = msg.match[1].toLowerCase()
+  robot.respond /markov\s+(\S+\s?)(.+)?$/i, (msg) ->
+    userName = msg.match[1].toLowerCase().strip()
+    if userName is 'me'
+      console.log 'Markoving self!'
+      userName = msg.message.user.name.toLowerCase().strip()
+    else if userName is 'mumbot'
+      return;
+    
+    console.log 'Markoving ' + userName + '!'
+    
     seedText = msg.match[3] or ''
     model.generate userName, seedText, max, (text) =>
       msg.send text.capitalize()
