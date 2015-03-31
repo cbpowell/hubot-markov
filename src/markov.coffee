@@ -65,6 +65,15 @@ module.exports = (robot) ->
     return if !msg.message.user.name
     
     userName = msg.message.user.name.toLowerCase()
+    
+    # Return on ignored users
+    ignoredUsers = []
+    if process.env.HUBOT_MARKOV_IGNORED_USERS?
+      console.log process.env.HUBOT_MARKOV_IGNORED_USERS
+      ignoredUsers = process.env.HUBOT_MARKOV_IGNORED_USERS.split ","
+    
+    return if userName in ignoredUsers
+    
     # Extract text (not robot name)
     #re = new RegExp("(" + robot.name + "\s)?(.+)","i")
     learnText = msg.message.text.match ///( #{robot.name} \s)?(.+)///i
