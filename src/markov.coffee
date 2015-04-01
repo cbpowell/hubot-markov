@@ -40,6 +40,7 @@ module.exports = (robot) ->
   info = Url.parse process.env.REDISTOGO_URL or
     process.env.REDISCLOUD_URL or
     process.env.BOXEN_REDIS_URL or
+    process.env.REDIS_URL or
     'redis://localhost:6379'
   client = Redis.createClient(info.port, info.hostname)
 
