@@ -81,13 +81,13 @@ module.exports = (robot) ->
     model.learn userName, learnText[2]
 
   # Generate markov chains on demand, optionally seeded by some initial state.
-  robot.hear /markov|marakov|mkv\s+(\S+\s?)(.+)?$/i, (msg) ->
-    userName = msg.match[1].toLowerCase().strip()
+  robot.hear /(markov|marakov|mkv)\s+(\S+\s?)(.+)?$/i, (msg) ->
+    userName = msg.match[2].toLowerCase().strip()
     if userName is 'me'
       userName = msg.message.user.name.toLowerCase().strip()
     else if userName is 'mumbot'
       return;
     
-    seedText = msg.match[2] or ''
+    seedText = msg.match[3] or ''
     model.generate userName, seedText, max, (text) =>
       msg.send text.capitalize()
